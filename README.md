@@ -1,5 +1,9 @@
 # LlmBrain-AK
 
+[![Claude Code](https://img.shields.io/badge/Claude_Code-compatible-5B21B6?style=flat-square)](https://claude.ai/code)
+[![Agente](https://img.shields.io/badge/agente-cualquier_LLM-0EA5E9?style=flat-square)](#)
+[![Patron](https://img.shields.io/badge/patron-Karpathy_LLM_Wiki-10B981?style=flat-square)](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
+
 **Una base de conocimiento personal mantenida por un agente LLM — no un chatbot, un segundo cerebro persistente.**
 
 > Implementacion del patron [LLM Wiki de Andrej Karpathy](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
@@ -30,8 +34,6 @@ LlmBrain-AK:       fuente → dialogo → wiki persistente → consulta directa
 
 ## Arquitectura
 
-Tres capas con responsabilidades claras:
-
 ```
 LlmBrain-AK/
 │
@@ -40,18 +42,53 @@ LlmBrain-AK/
 │   └── assets/            # Imagenes descargadas localmente
 │
 ├── wiki/                  # Paginas generadas por el LLM — el agente es dueno de esta capa
-│   ├── concepto-a.md      # Una pagina por entidad, concepto o tema
-│   └── persona-b.md
-│
-├── schema/                # Decisiones de diseno y changelog del sistema
-│   └── decisiones.md
+│   ├── _template.md       # Template con frontmatter para nuevas paginas
+│   └── concepto-a.md      # Una pagina por entidad, concepto o tema
 │
 ├── index.md               # Catalogo de contenido — se actualiza en cada ingest
 ├── log.md                 # Registro cronologico append-only de toda actividad
-└── CLAUDE.md              # Schema operativo — instrucciones para el agente
+├── CLAUDE.md              # Schema operativo para Claude Code
+├── AGENTS.md              # Schema operativo para otros agentes (Codex, OpenCode)
+└── SETUP.md               # Guia de inicializacion para nuevos dominios
 ```
 
 **Regla fundamental:** el humano escribe en `sources/`. El LLM escribe en `wiki/`. Nunca al reves.
+
+---
+
+## Flujo del sistema
+
+```mermaid
+flowchart TD
+    H([Human])
+
+    subgraph INGEST
+        S[sources/] --> IG[Leer fuente]
+        IG <-->|discute takeaways| H
+        IG --> W[(wiki/\n10-15 paginas)]
+        IG --> IDX[index.md]
+        IG --> LOG[log.md]
+    end
+
+    subgraph QUERY
+        Q[Pregunta] --> IDX2[Leer index.md]
+        IDX2 --> WQ[(wiki/\npaginas relevantes)]
+        WQ --> R[Respuesta + citas]
+        R -.->|si es valiosa| WQ
+        R --> H
+    end
+
+    subgraph LINT
+        L[Health check] --> WL[(wiki/)]
+        WL --> REP[Reporte]
+        REP --> LOG2[log.md]
+        REP -->|sugiere fuentes nuevas| H
+    end
+
+    H -->|deposita fuente| S
+    H -->|hace pregunta| Q
+    H -->|pide mantenimiento| L
+```
 
 ---
 
@@ -120,29 +157,32 @@ Formatos de salida disponibles segun la consulta:
 
 ## Quickstart
 
-Requiere [Claude Code](https://claude.ai/code).
-
 ```bash
-# Clonar
+# 1. Clonar
 git clone https://github.com/devsart95/LlmBrain-AK
 cd LlmBrain-AK
 
-# Abrir con Claude Code
+# 2. Leer SETUP.md y configurar el dominio
+# Editar CLAUDE.md con tus categorias
+
+# 3. Abrir con Claude Code
 claude .
 
-# Cambiar a Opus para operaciones profundas
+# 4. Cambiar a Opus para operaciones profundas
 /model opus
 
-# Ingestar primera fuente
-# Depositar un archivo en sources/, luego decirle al agente:
+# 5. Primer ingest
+# Depositar un archivo en sources/, luego:
 # "ingest sources/mi-articulo.md"
 
-# Consultar
+# 6. Consultar
 # "que dice la wiki sobre X?"
 
-# Mantenimiento periodico
+# 7. Mantenimiento periodico
 # "lint the wiki"
 ```
+
+Ver `SETUP.md` para la guia completa de inicializacion.
 
 ---
 
@@ -163,11 +203,11 @@ Sin codigo requerido hasta que la escala lo demande (~100 paginas).
 
 | Herramienta | Funcion |
 |-------------|---------|
-| [qmd](https://github.com/tobi/qmd) | Busqueda semantica local BM25/vector con MCP server — se integra directo con Claude |
+| [qmd](https://github.com/tobi/qmd) | Busqueda semantica local BM25/vector con MCP server |
 | [Obsidian](https://obsidian.md) | Graph view para visualizar conexiones, renderiza `[[wiki-links]]` |
 | [Obsidian Web Clipper](https://obsidian.md/clipper) | Convierte articulos web a markdown antes del ingest |
 | [Marp](https://marp.app) | Presentaciones desde paginas wiki en markdown |
-| [Dataview](https://blacksmithgu.github.io/obsidian-dataview/) | Queries dinamicas sobre frontmatter YAML de las paginas |
+| [Dataview](https://blacksmithgu.github.io/obsidian-dataview/) | Queries sobre frontmatter YAML — requiere campos en `wiki/_template.md` |
 
 ---
 
@@ -179,10 +219,17 @@ Sin codigo requerido hasta que la escala lo demande (~100 paginas).
 sources/**/*.pdf
 sources/**/*.md
 wiki/*.md
+!wiki/_template.md
 !wiki/.gitkeep
 ```
 
-Los archivos de framework (`CLAUDE.md`, `index.md`, `log.md`) no contienen datos personales y son seguros como publicos.
+Los archivos de framework (`CLAUDE.md`, `AGENTS.md`, `index.md`, `log.md`, `SETUP.md`) no contienen datos personales.
+
+---
+
+## Nota
+
+Este repositorio es intencionalmente un punto de partida, no un framework rigido. La estructura de directorios, las convenciones de las paginas, el schema del agente — todo depende de tu dominio y tus preferencias. Tomar lo que sirve, ignorar lo que no. El agente puede ayudarte a adaptar el sistema desde el primer dia.
 
 ---
 

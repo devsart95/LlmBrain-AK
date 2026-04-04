@@ -88,8 +88,25 @@ Trigger: `"lint the wiki"`
 
 ## Estructura de paginas wiki
 
+Ver `wiki/_template.md` para el archivo listo para copiar.
+
+Cada pagina incluye frontmatter YAML obligatorio:
+
+```yaml
+---
+title: Nombre del concepto o entidad
+type: concept | entity | person | comparison | analysis | overview
+tags: [tag1, tag2]
+sources: 0
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+---
+```
+
+Cuerpo de la pagina:
+
 ```markdown
-# [Titulo]
+# Titulo
 
 > Una linea de definicion / resumen ejecutivo
 
@@ -105,11 +122,13 @@ Trigger: `"lint the wiki"`
 - Parte de: [[Categoria/Tema]]
 
 ## Fuentes
-- `sources/nombre-archivo.md` — [descripcion breve]
+- `sources/nombre-archivo.md` — descripcion breve
 
 ## Log de cambios
-- YYYY-MM-DD: [que se agrego/cambio]
+- YYYY-MM-DD: creacion inicial
 ```
+
+El frontmatter permite usar Dataview en Obsidian para generar tablas dinamicas por `type`, `tags`, o `sources`.
 
 ---
 
