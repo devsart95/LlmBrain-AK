@@ -1,122 +1,179 @@
-# WikiJRS
+# LlmBrain-AK
 
-**A personal knowledge base maintained by an LLM — not a chatbot, a persistent second brain.**
+**Una base de conocimiento personal mantenida por un agente LLM — no un chatbot, un segundo cerebro persistente.**
 
-> Based on [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
+> Implementacion del patron [LLM Wiki de Andrej Karpathy](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
 
 ---
 
-## The idea
+## El problema con RAG
 
-Most people use LLMs like search engines: ask, get answer, forget. Karpathy proposes something different — make the LLM **incrementally build and maintain a wiki** that compounds over time.
+La mayoria usa los LLMs como buscadores: pregunta, respuesta, olvido. Los sistemas RAG tradicionales (NotebookLM, ChatGPT file uploads) redescubren el conocimiento desde cero en cada consulta. No acumulan nada.
 
 > *"The tedious part of maintaining a knowledge base is not the reading or the thinking — it's the bookkeeping."*
 > — Andrej Karpathy
 
-The insight: every time you feed the LLM a new source, it doesn't just answer a question. It updates 10–15 related pages, resolves contradictions, fills gaps, and cross-references everything. The wiki grows smarter with each ingest.
+---
 
-Traditional RAG rediscovers knowledge on every query. This approach **compiles it once and maintains it continuously**.
+## La idea
+
+En lugar de recuperar fragmentos al momento de la consulta, el LLM **construye y mantiene una wiki persistente** que se compone con el tiempo.
+
+Cada vez que agregas una fuente, el agente no solo la indexa — la lee, discute los takeaways clave contigo, y actualiza 10-15 paginas relacionadas: resuelve contradicciones, completa gaps, refuerza cross-references. **El conocimiento se compila una vez y se mantiene actualizado**, no se re-deriva en cada query.
+
+```
+RAG tradicional:   fuente → chunks → vector store → recuperar en cada query
+LlmBrain-AK:       fuente → dialogo → wiki persistente → consulta directa
+```
 
 ---
 
-## Architecture
+## Arquitectura
 
-Three layers, clean separation:
+Tres capas con responsabilidades claras:
 
 ```
-WikiJRS/
-├── sources/          # Raw inputs — immutable, source of truth
-│   ├── article.md    # PDFs, papers, notes, transcripts, clips
-│   └── assets/       # Images downloaded locally (Obsidian Web Clipper)
+LlmBrain-AK/
 │
-├── wiki/             # LLM-generated pages — Claude owns this layer
-│   ├── concept-a.md  # One file per entity, concept, or topic
-│   └── person-b.md
+├── sources/               # Fuentes crudas — inmutables, verdad de origen
+│   ├── articulo.md        # Papers, articulos, notas, transcripciones
+│   └── assets/            # Imagenes descargadas localmente
 │
-├── schema/           # Design decisions & changelog
+├── wiki/                  # Paginas generadas por el LLM — el agente es dueno de esta capa
+│   ├── concepto-a.md      # Una pagina por entidad, concepto o tema
+│   └── persona-b.md
+│
+├── schema/                # Decisiones de diseno y changelog del sistema
 │   └── decisiones.md
 │
-├── index.md          # Content catalog — updated on every ingest
-├── log.md            # Append-only activity log
-└── CLAUDE.md         # Schema & operating instructions for Claude
+├── index.md               # Catalogo de contenido — se actualiza en cada ingest
+├── log.md                 # Registro cronologico append-only de toda actividad
+└── CLAUDE.md              # Schema operativo — instrucciones para el agente
 ```
 
----
-
-## Three operations
-
-### `INGEST` — add a new source
-Drop a file in `sources/`. Tell Claude: *"ingest sources/article.md"*
-
-Claude reads the source, **discusses key takeaways with you first**, then creates or updates 10–15 wiki pages, updates the index, and logs everything. It's a dialogue — you guide what to emphasize.
-
-### `QUERY` — ask the wiki
-Ask a question. Claude reads `index.md` first, drills into relevant pages, and synthesizes an answer with citations. Valuable answers — comparisons, analyses, new connections — get filed back as wiki pages. **Your explorations compound just like ingested sources do.**
-
-Output can be: markdown page, comparison table, Marp slide deck, matplotlib chart, or canvas — depending on the question.
-
-### `LINT` — health check
-Tell Claude: *"lint the wiki"*
-
-Claude scans for orphan pages, contradictions, stale claims, missing cross-references, and data gaps that could be filled with a web search. Then goes further: **suggests new questions to investigate and new sources to find**. Generates a full report in `log.md`.
+**Regla fundamental:** el humano escribe en `sources/`. El LLM escribe en `wiki/`. Nunca al reves.
 
 ---
 
-## How to use this
+## Las tres operaciones
 
-**Requirements:** [Claude Code](https://claude.ai/code) with Opus model for ingest/lint, Sonnet for search/read.
+### `INGEST` — agregar una fuente nueva
+
+```
+"ingest sources/articulo.md"
+```
+
+1. El agente lee la fuente completa
+2. **Discute los takeaways clave contigo** — confirma que enfatizar antes de escribir
+3. Crea la pagina de resumen en `wiki/`
+4. Actualiza 10-15 paginas relacionadas (entidades, conceptos, comparaciones)
+5. Actualiza `index.md` y registra en `log.md`
+
+El ingest es un dialogo, no un proceso batch silencioso.
+
+---
+
+### `QUERY` — consultar la wiki
+
+```
+"que dice la wiki sobre X?"
+"compara A con B"
+"genera un resumen ejecutivo de todo lo que se sabe sobre Y"
+```
+
+1. Lee `index.md` para identificar paginas relevantes
+2. Drill down sobre esas paginas
+3. Sintetiza respuesta con citas
+4. **Archiva la respuesta como nueva pagina wiki** si es valiosa — las exploraciones componen el conocimiento igual que las fuentes
+
+Formatos de salida disponibles segun la consulta:
+
+| Formato | Cuando usarlo |
+|---------|--------------|
+| Pagina markdown | respuesta narrativa, analisis |
+| Tabla comparativa | contrastar conceptos o entidades |
+| Slide deck (Marp) | presentar hallazgos |
+| Chart (matplotlib) | datos cuantitativos |
+| Canvas / overview | mapa del dominio completo |
+
+---
+
+### `LINT` — health check de la wiki
+
+```
+"lint the wiki"
+```
+
+**Deteccion:**
+- Paginas huerfanas (sin links entrantes)
+- Afirmaciones contradictorias entre paginas
+- Claims desactualizados por fuentes mas recientes
+- Conceptos referenciados pero sin pagina propia
+- Data gaps resolubles con una busqueda web
+
+**Proactivo:**
+- Sugiere nuevas preguntas que la wiki aun no responde
+- Sugiere nuevas fuentes a buscar para cubrir los gaps
+- Genera reporte completo en `log.md`
+
+---
+
+## Quickstart
+
+Requiere [Claude Code](https://claude.ai/code).
 
 ```bash
-# 1. Clone or fork this repo
-git clone https://github.com/devsart95/WikiJRS
-cd WikiJRS
+# Clonar
+git clone https://github.com/devsart95/LlmBrain-AK
+cd LlmBrain-AK
 
-# 2. Open with Claude Code
+# Abrir con Claude Code
 claude .
 
-# 3. Switch to Opus for deep operations
+# Cambiar a Opus para operaciones profundas
 /model opus
 
-# 4. Start adding knowledge
-# Drop a file in sources/, then:
-# "ingest sources/my-article.md"
+# Ingestar primera fuente
+# Depositar un archivo en sources/, luego decirle al agente:
+# "ingest sources/mi-articulo.md"
 
-# 5. Query your wiki
-# "what does the wiki say about X?"
+# Consultar
+# "que dice la wiki sobre X?"
 
-# 6. Periodic maintenance
+# Mantenimiento periodico
 # "lint the wiki"
 ```
 
-The `CLAUDE.md` file is the schema — it tells Claude exactly how to operate, what format to use, and what decisions have been made. Edit it to evolve the system with your needs.
+---
+
+## Asignacion de modelos
+
+| Operacion | Modelo | Razon |
+|-----------|--------|-------|
+| Ingest | **Opus** | Razonamiento profundo, conexiones entre conceptos |
+| Lint | **Opus** | Deteccion de contradicciones, sugerencias proactivas |
+| Query | **Opus** | Sintesis multi-fuente |
+| Busqueda / lectura | **Sonnet** | Rapido y eficiente para recuperar contexto |
 
 ---
 
-## Model assignment
+## Herramientas opcionales
 
-| Operation | Model | Why |
-|-----------|-------|-----|
-| Ingest / Lint | **Opus** | Deep reasoning, cross-referencing, contradiction detection |
-| Query | **Opus** | Multi-source synthesis |
-| Search / Read | **Sonnet** | Fast, efficient file retrieval |
+Sin codigo requerido hasta que la escala lo demande (~100 paginas).
 
----
-
-## Optional tooling
-
-Once the wiki grows past ~100 pages:
-
-- **[qmd](https://github.com/tobi/qmd)** — local BM25/vector search with MCP server, integrates directly with Claude
-- **[Obsidian](https://obsidian.md)** — graph view to visualize connections between pages, renders `[[wiki-links]]`
-- **[Obsidian Web Clipper](https://obsidian.md/clipper)** — clip web articles to markdown before ingesting
-
-No code required until scale demands it.
+| Herramienta | Funcion |
+|-------------|---------|
+| [qmd](https://github.com/tobi/qmd) | Busqueda semantica local BM25/vector con MCP server — se integra directo con Claude |
+| [Obsidian](https://obsidian.md) | Graph view para visualizar conexiones, renderiza `[[wiki-links]]` |
+| [Obsidian Web Clipper](https://obsidian.md/clipper) | Convierte articulos web a markdown antes del ingest |
+| [Marp](https://marp.app) | Presentaciones desde paginas wiki en markdown |
+| [Dataview](https://blacksmithgu.github.io/obsidian-dataview/) | Queries dinamicas sobre frontmatter YAML de las paginas |
 
 ---
 
-## Privacy
+## Privacidad
 
-The `sources/` and `wiki/` directories contain your personal knowledge. If the content is sensitive, add these lines to your `.gitignore`:
+`sources/` y `wiki/` contienen tu conocimiento personal. Si el contenido es sensible, agregar al `.gitignore`:
 
 ```gitignore
 sources/**/*.pdf
@@ -125,11 +182,11 @@ wiki/*.md
 !wiki/.gitkeep
 ```
 
-The framework files (`CLAUDE.md`, `index.md`, `log.md`, `cuestionario.md`) are safe to keep public as they contain no personal data.
+Los archivos de framework (`CLAUDE.md`, `index.md`, `log.md`) no contienen datos personales y son seguros como publicos.
 
 ---
 
-## Credits
+## Creditos
 
-Pattern by [Andrej Karpathy](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f).
-Implementation by [devsart95](https://github.com/devsart95) — Paraguay 🇵🇾
+Patron original por [Andrej Karpathy](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f).
+Implementacion por [devsart95](https://github.com/devsart95) — Paraguay
