@@ -26,7 +26,8 @@ Three layers, clean separation:
 ```
 WikiJRS/
 ├── sources/          # Raw inputs — immutable, source of truth
-│   └── article.md    # PDFs, papers, notes, transcripts, clips
+│   ├── article.md    # PDFs, papers, notes, transcripts, clips
+│   └── assets/       # Images downloaded locally (Obsidian Web Clipper)
 │
 ├── wiki/             # LLM-generated pages — Claude owns this layer
 │   ├── concept-a.md  # One file per entity, concept, or topic
@@ -47,15 +48,17 @@ WikiJRS/
 ### `INGEST` — add a new source
 Drop a file in `sources/`. Tell Claude: *"ingest sources/article.md"*
 
-Claude reads the source, identifies entities and concepts, creates or updates 5–15 wiki pages, updates the index, and logs everything.
+Claude reads the source, **discusses key takeaways with you first**, then creates or updates 10–15 wiki pages, updates the index, and logs everything. It's a dialogue — you guide what to emphasize.
 
 ### `QUERY` — ask the wiki
-Ask a question. Claude searches wiki pages, synthesizes an answer with citations, and optionally saves valuable answers as new wiki pages.
+Ask a question. Claude reads `index.md` first, drills into relevant pages, and synthesizes an answer with citations. Valuable answers — comparisons, analyses, new connections — get filed back as wiki pages. **Your explorations compound just like ingested sources do.**
+
+Output can be: markdown page, comparison table, Marp slide deck, matplotlib chart, or canvas — depending on the question.
 
 ### `LINT` — health check
 Tell Claude: *"lint the wiki"*
 
-Claude scans for orphan pages, contradictions between entries, stale claims, and gaps — concepts referenced but never defined. Generates a report in `log.md`.
+Claude scans for orphan pages, contradictions, stale claims, missing cross-references, and data gaps that could be filled with a web search. Then goes further: **suggests new questions to investigate and new sources to find**. Generates a full report in `log.md`.
 
 ---
 
@@ -103,7 +106,7 @@ The `CLAUDE.md` file is the schema — it tells Claude exactly how to operate, w
 
 Once the wiki grows past ~100 pages:
 
-- **[qmd](https://github.com/qmd-app/qmd)** — local BM25/vector search with MCP server, integrates directly with Claude
+- **[qmd](https://github.com/tobi/qmd)** — local BM25/vector search with MCP server, integrates directly with Claude
 - **[Obsidian](https://obsidian.md)** — graph view to visualize connections between pages, renders `[[wiki-links]]`
 - **[Obsidian Web Clipper](https://obsidian.md/clipper)** — clip web articles to markdown before ingesting
 
