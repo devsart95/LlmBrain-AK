@@ -14,8 +14,11 @@ Thumbs.db
 *.key
 *.pem
 
-# Source documents — pueden contener informacion sensible o propietaria
-# Descomenta si quieres ignorar tu contenido personal
+# Archivos de configuracion y diseno personal — no para el publico
+cuestionario.md
+schema/
+
+# Contenido personal de la wiki — descomenta si quieres privacidad total
 # sources/**/*.pdf
 # sources/**/*.docx
 # sources/**/*.txt
