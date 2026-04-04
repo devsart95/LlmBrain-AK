@@ -1,0 +1,33 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Env / secrets
+.env
+.env.*
+*.key
+*.pem
+
+# Source documents — pueden contener informacion sensible o propietaria
+# Descomenta si quieres ignorar tu contenido personal
+# sources/**/*.pdf
+# sources/**/*.docx
+# sources/**/*.txt
+# wiki/*.md
+# !wiki/.gitkeep
+
+# Dependencies (si en el futuro se agrega CLI Python)
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+
+# Build
+dist/
+*.egg-info/
