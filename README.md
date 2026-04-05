@@ -53,7 +53,7 @@ LlmBrain-AK/
 ```mermaid
 flowchart LR
     H([Human])
-    W[(wiki/)]
+    W[(wiki)]
     WS[wikisearch]
     LOG[log.md]
 
