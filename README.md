@@ -59,35 +59,29 @@ LlmBrain-AK/
 ## Flujo del sistema
 
 ```mermaid
-flowchart TD
+flowchart LR
     H([Human])
+    W[(wiki/)]
+    IDX[index.md]
+    LOG[log.md]
 
-    subgraph INGEST
-        S[sources/] --> IG[Leer fuente]
-        IG <-->|discute takeaways| H
-        IG --> W[(wiki/\n10-15 paginas)]
-        IG --> IDX[index.md]
-        IG --> LOG[log.md]
-    end
+    H -->|deposita fuente| IG[INGEST]
+    IG -->|discute takeaways| H
+    IG --> W
+    IG --> IDX
+    IG --> LOG
 
-    subgraph QUERY
-        Q[Pregunta] --> IDX2[Leer index.md]
-        IDX2 --> WQ[(wiki/\npaginas relevantes)]
-        WQ --> R[Respuesta + citas]
-        R -.->|si es valiosa| WQ
-        R --> H
-    end
+    H -->|hace pregunta| Q[QUERY]
+    Q --> IDX
+    IDX --> W
+    W --> Q
+    Q -->|respuesta + citas| H
+    Q -.->|archiva si es valiosa| W
 
-    subgraph LINT
-        L[Health check] --> WL[(wiki/)]
-        WL --> REP[Reporte]
-        REP --> LOG2[log.md]
-        REP -->|sugiere fuentes nuevas| H
-    end
-
-    H -->|deposita fuente| S
-    H -->|hace pregunta| Q
-    H -->|pide mantenimiento| L
+    H -->|pide health-check| L[LINT]
+    L --> W
+    L --> LOG
+    L -->|sugiere fuentes nuevas| H
 ```
 
 ---
