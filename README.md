@@ -112,8 +112,8 @@ El ingest es un dialogo, no un proceso batch silencioso.
 "genera un resumen ejecutivo de todo lo que se sabe sobre Y"
 ```
 
-1. Lee `index.md` para identificar paginas relevantes
-2. Drill down sobre esas paginas
+1. `wiki_search(query)` — recupera snippets comprimidos sin leer archivos
+2. `wiki_get(filename)` — lee solo las paginas que realmente necesitas
 3. Sintetiza respuesta con citas
 4. **Archiva la respuesta como nueva pagina wiki** si es valiosa — las exploraciones componen el conocimiento igual que las fuentes
 
@@ -156,23 +156,26 @@ Formatos de salida disponibles segun la consulta:
 git clone https://github.com/devsart95/LlmBrain-AK
 cd LlmBrain-AK
 
-# 2. Leer SETUP.md y configurar el dominio
+# 2. Instalar el modulo de busqueda
+pip install -e .
+
+# 3. Leer SETUP.md y configurar el dominio
 # Editar CLAUDE.md con tus categorias
 
-# 3. Abrir con Claude Code
+# 4. Abrir con Claude Code (carga el MCP automaticamente via .mcp.json)
 claude .
 
-# 4. Cambiar a Opus para operaciones profundas
+# 5. Cambiar a Opus para operaciones profundas
 /model opus
 
-# 5. Primer ingest
+# 6. Primer ingest
 # Depositar un archivo en sources/, luego:
 # "ingest sources/mi-articulo.md"
 
-# 6. Consultar
+# 7. Consultar — el agente usa wiki_search() automaticamente
 # "que dice la wiki sobre X?"
 
-# 7. Mantenimiento periodico
+# 8. Mantenimiento periodico
 # "lint the wiki"
 ```
 
@@ -191,17 +194,99 @@ Ver `SETUP.md` para la guia completa de inicializacion.
 
 ---
 
-## Herramientas opcionales
+## Motor de busqueda — `wikisearch`
 
-Sin codigo requerido hasta que la escala lo demande (~100 paginas).
+A medida que la wiki crece, el agente no puede leer todo para responder una pregunta. Una wiki de 500 paginas tiene `index.md` solo con ~15,000 tokens. Leer 10 paginas para responder algo simple son otros ~15,000. El costo se vuelve prohibitivo.
+
+`wikisearch` es el modulo Python incluido en el repo que resuelve esto.
+
+### Que resuelve
+
+**Sin modulo:** el agente lee `index.md` + las paginas que parecen relevantes — entre 10,000 y 18,000 tokens por query tipica.
+
+**Con modulo:** el agente recibe snippets comprimidos (~150 tokens cada uno) y solo llama `wiki_get()` para las paginas que realmente necesita leer. **~2,700 tokens por query tipica. 85% menos.**
+
+### Como funciona
+
+Pipeline de 3 etapas con early exit — sale en la etapa mas barata que sea suficiente:
+
+```
+Etapa 1 — MetaFilter    filtra por frontmatter YAML (type, tags, title)
+                         costo: 0ms, 0 tokens
+                         500 paginas → 10-30 candidatos
+
+Etapa 2 — BM25          ranking lexical sobre titulos + tags + snippets
+                         costo: <5ms, sin API, sin embeddings
+                         30 candidatos → top-10
+
+Etapa 3 — SemanticRerank similitud coseno sobre embeddings precalculados
+                         costo: ~50ms en CPU, sin API externa
+                         top-10 → top-5 reordenados por relevancia semantica
+```
+
+Si la etapa 1 devuelve 1-3 resultados claros, no se ejecutan las siguientes. La mayoria de queries con filtros explicitos (`types=["comparison"]`) terminan en etapa 1.
+
+### Tecnologia
+
+| Componente | Libreria | Detalle |
+|------------|----------|---------|
+| BM25 | `rank-bm25` | Algoritmo BM25Okapi sobre corpus tokenizado en disco |
+| Embeddings | `sentence-transformers` | Modelo `gte-small` (33M params, 384 dims, ~67MB, 100% local) |
+| Similitud | `numpy` | Cosine similarity sobre matriz `.npz` — sin vector DB |
+| Frontmatter | `python-frontmatter` | Parseo de YAML en cada pagina wiki |
+| CLI | `click` | `wiki search`, `wiki get`, `wiki tags`, `wiki lint`, `wiki index` |
+| MCP Server | `fastmcp` | 4 tools disponibles directamente en Claude Code |
+
+Sin servidor. Sin API externa. Todo corre en CPU local.
+
+### Uso
+
+```bash
+# Instalar
+pip install -e .
+
+# Construir el indice (primera vez — ~55s por descarga del modelo)
+wiki index
+
+# Buscar
+wiki search "RAG vs LLM Wiki"
+wiki search "arquitectura" --type concept --top 3
+
+# Leer una pagina especifica
+wiki get ejemplo-rag-vs-llm-wiki.md
+
+# Explorar el dominio antes de buscar
+wiki tags
+
+# Health check
+wiki lint
+```
+
+### MCP en Claude Code
+
+El archivo `.mcp.json` en la raiz del repo configura el servidor automaticamente. Al abrir el proyecto con `claude .`, el agente tiene disponibles estas tools nativas:
+
+| Tool | Que hace |
+|------|----------|
+| `wiki_search(query, types, tags)` | Devuelve snippets, no paginas completas |
+| `wiki_get(filename)` | Lee una pagina especifica — usar solo cuando el snippet no alcanza |
+| `wiki_tags()` | Lista tags con conteo — para explorar el dominio antes de buscar |
+| `wiki_index(rebuild)` | Sincroniza el indice despues de un ingest |
+
+### Indice incremental
+
+El indice se actualiza automaticamente cuando el agente llama `wiki_index()` al final de cada ingest. Compara `mtime` + `size` de cada archivo y solo re-indexa lo que cambio. Un ingest tipico (15 paginas nuevas) tarda ~800ms en sincronizar.
+
+---
+
+## Herramientas opcionales
 
 | Herramienta | Funcion |
 |-------------|---------|
-| [qmd](https://github.com/tobi/qmd) | Busqueda semantica local BM25/vector con MCP server |
-| [Obsidian](https://obsidian.md) | Graph view para visualizar conexiones, renderiza `[[wiki-links]]` |
+| [Obsidian](https://obsidian.md) | Graph view para visualizar conexiones entre paginas, renderiza `[[wiki-links]]` |
 | [Obsidian Web Clipper](https://obsidian.md/clipper) | Convierte articulos web a markdown antes del ingest |
 | [Marp](https://marp.app) | Presentaciones desde paginas wiki en markdown |
-| [Dataview](https://blacksmithgu.github.io/obsidian-dataview/) | Queries sobre frontmatter YAML — requiere campos en `wiki/_template.md` |
+| [Dataview](https://blacksmithgu.github.io/obsidian-dataview/) | Queries dinamicas sobre el frontmatter YAML de las paginas |
 
 ---
 
