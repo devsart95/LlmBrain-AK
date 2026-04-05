@@ -52,29 +52,23 @@ LlmBrain-AK/
 
 ```mermaid
 flowchart LR
-    H([Human])
-    W[(wiki)]
-    WS[wikisearch]
-    LOG[log.md]
-
-    H -->|deposita fuente| IG[INGEST]
+    H[Human] -->|deposita fuente| IG[INGEST]
     IG -->|discute takeaways| H
-    IG --> W
-    IG --> WS
-    IG --> LOG
+    IG --> W[wiki]
+    IG --> WS[wikisearch]
+    IG --> LOG[log.md]
 
     H -->|hace pregunta| Q[QUERY]
-    Q -->|wiki_search| WS
+    Q --> WS
     WS -->|snippets| Q
-    Q -->|wiki_get| W
-    W -->|pagina completa| Q
-    Q -->|respuesta + citas| H
-    Q -.->|archiva si es valiosa| W
+    Q --> W
+    W -->|pagina| Q
+    Q -->|respuesta| H
 
-    H -->|pide health-check| L[LINT]
+    H -->|health-check| L[LINT]
     L --> W
     L --> LOG
-    L -->|sugiere fuentes nuevas| H
+    L --> H
 ```
 
 ---
