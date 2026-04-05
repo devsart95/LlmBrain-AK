@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "wikisearch": {
+      "command": "python",
+      "args": ["-m", "wikisearch.mcp_server"],
+      "cwd": "."
+    }
+  }
+}

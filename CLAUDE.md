@@ -45,6 +45,7 @@ Trigger: `"ingest sources/archivo.md"`
 4. Crear o actualizar 10-15 paginas wiki relacionadas (entidades, conceptos, comparaciones)
 5. Actualizar `index.md` con nuevas entradas
 6. Registrar en `log.md`
+7. Ejecutar `wiki_index()` (o `wiki index` en CLI) para sincronizar el indice de busqueda
 
 > *"Personally I prefer to ingest sources one at a time and stay involved — I read the summaries, check the updates, and guide the LLM on what to emphasize."* — Karpathy
 
@@ -55,10 +56,20 @@ El ingest es un dialogo, no un proceso batch silencioso.
 ### QUERY — consultar la wiki
 Trigger: pregunta directa sobre el dominio
 
-1. Leer `index.md` primero para identificar paginas relevantes
-2. Drill down: leer las paginas identificadas
-3. Sintetizar respuesta con citas a paginas wiki
-4. **Archivar la respuesta** si es valiosa (comparacion, analisis, conexion nueva) → guardar como nueva pagina wiki
+**Con modulo wikisearch (MCP activo):**
+1. `wiki_tags()` — explorar el dominio si la pregunta es amplia
+2. `wiki_search(query, types=[], tags=[])` — recuperar snippets comprimidos (~150 tokens cada uno)
+3. Evaluar snippets — llamar `wiki_get(filename)` SOLO para las paginas que realmente necesitas leer
+4. Sintetizar respuesta con citas
+5. **Archivar si es valiosa** → nueva pagina wiki + ejecutar `wiki_index()`
+
+**Sin modulo (fallback):**
+1. Leer `index.md` para identificar paginas relevantes
+2. Drill down sobre esas paginas
+3. Sintetizar respuesta con citas
+4. Archivar si es valiosa
+
+> **NUNCA leer wiki/ completo ni hacer Glob sobre wiki/. Siempre buscar primero.**
 
 Formatos de salida posibles segun la pregunta:
 - Pagina markdown (default)
@@ -192,9 +203,33 @@ Este archivo es un documento vivo. A medida que se descubre que funciona para el
 - **Marp**: exportar paginas wiki a presentaciones markdown
 - **Dataview** (plugin Obsidian): queries dinamicas sobre frontmatter YAML de las paginas
 
-## Cuando agregar codigo
+## Modulo de busqueda — wikisearch
 
-Sin codigo requerido hasta ~100 paginas. Trigger para agregar CLI Python:
-- Busqueda semantica/vectorial necesaria
-- Lint automatizado via cron
-- Exportar a formatos externos (HTML, PDF)
+Instalado en el repo. Activa recuperacion token-eficiente para la wiki.
+
+### Instalacion
+```bash
+uv pip install -e .
+# o: pip install -e .
+```
+
+### Reduccion de tokens vs leer manualmente
+
+| Metodo | Tokens por query tipica |
+|--------|------------------------|
+| Sin modulo (leer index + 5 paginas) | ~10,000-18,000 |
+| Con modulo (snippets + 2 get) | ~2,700 |
+| Wiki de 500 paginas sin modulo | index.md solo ~15,000 |
+
+### CLI
+```bash
+wiki index              # sincronizar indice
+wiki search "query"     # buscar (snippets)
+wiki get pagina.md      # leer pagina completa
+wiki tags               # explorar el dominio
+wiki lint               # health check
+```
+
+### MCP Server (Claude Code)
+El archivo `.mcp.json` esta en la raiz del repo.
+Tools disponibles: `wiki_search`, `wiki_get`, `wiki_tags`, `wiki_index`.

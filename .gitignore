@@ -25,12 +25,18 @@ schema/
 # wiki/*.md
 # !wiki/.gitkeep
 
-# Dependencies (si en el futuro se agrega CLI Python)
+# Python
 __pycache__/
 *.pyc
+*.pyo
 .venv/
+.env/
 node_modules/
 
 # Build
 dist/
 *.egg-info/
+.hatch/
+
+# Indice generado por wikisearch — no versionar
+.wiki_index/
