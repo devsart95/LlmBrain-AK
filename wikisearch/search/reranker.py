@@ -34,14 +34,16 @@ def rerank(
     bm25_norm = bm25_scores / max_bm25 if max_bm25 > 0 else bm25_scores
 
     # Calcular similitud coseno solo para los candidatos
-    candidate_vecs = np.array([
-        vecs[fn_to_idx[r.filename]]
-        for r in candidates
-        if r.filename in fn_to_idx
-    ])
+    indexed = [r for r in candidates if r.filename in fn_to_idx]
+    missing = len(candidates) - len(indexed)
+    if missing:
+        import sys
+        print(f"[wikisearch] warning: {missing} resultado(s) sin vector — ejecuta 'wiki index'", file=sys.stderr)
 
-    if len(candidate_vecs) == 0:
+    if not indexed:
         return candidates[:top_k]
+
+    candidate_vecs = np.array([vecs[fn_to_idx[r.filename]] for r in indexed])
 
     sem_scores = vec_index.cosine_similarity(query_vec, candidate_vecs)
     sem_norm = (sem_scores + 1) / 2  # mapear [-1,1] a [0,1]
@@ -54,7 +56,7 @@ def rerank(
             score=float(final_scores[i]),
             snippet=r.snippet,
         )
-        for i, r in enumerate(candidates[:len(sem_norm)])
+        for i, r in enumerate(indexed[:len(sem_norm)])
     ]
 
     reranked.sort(key=lambda x: -x.score)

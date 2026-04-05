@@ -173,9 +173,9 @@ def _print_search_response(response) -> None:
     click.echo(f"Estrategia: {response.plan_strategy} | Etapas: {', '.join(response.stages_used)}")
     click.echo(f"Candidatos totales: {response.total_candidates} | Resultados: {len(response.results)}\n")
 
-    for r in response.results:
+    for i, r in enumerate(response.results, 1):
         expand = " [leer completo recomendado]" if r.expand_recommended else ""
-        click.echo(f"  [{r.rank if hasattr(r, 'rank') else ''}] {r.snippet.title}{expand}")
+        click.echo(f"  [{i}] {r.snippet.title}{expand}")
         click.echo(f"       {r.filename} | {r.snippet.type} | tags: {', '.join(r.snippet.tags)}")
         if r.snippet.oneliner:
             click.echo(f"       {r.snippet.oneliner[:120]}")
