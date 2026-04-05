@@ -277,6 +277,53 @@ El archivo `.mcp.json` en la raiz del repo configura el servidor automaticamente
 
 El indice se actualiza automaticamente cuando el agente llama `wiki_index()` al final de cada ingest. Compara `mtime` + `size` de cada archivo y solo re-indexa lo que cambio. Un ingest tipico (15 paginas nuevas) tarda ~800ms en sincronizar.
 
+### Demo — query real
+
+Pregunta al agente: *"Estoy armando un formulario de login, que tengo que tener en cuenta?"*
+
+El agente ejecuta internamente:
+
+```
+wiki_search("formulario login")
+wiki_search("accesibilidad formularios inputs validacion")
+→ 5 snippets relevantes, ~450 tokens
+
+wiki_get("ux-guidelines-formularios-accesibilidad.md")  ← lee solo esta
+wiki_get("react-shadcn-patterns.md")                    ← y esta
+wiki_get("patron-estados-ui.md")                        ← y esta
+```
+
+Y responde con citas precisas:
+
+```
+Estructura: react-hook-form + zod + shadcn FormField
+  - Label visible siempre (no solo placeholder) [High]
+  - type="email" + autoComplete="email" [Medium]
+  - Toggle show/hide en password [Medium]
+  - Nunca bloquear paste en password [High]
+  - Errores inline bajo cada campo, no al top [Medium]
+
+Accesibilidad:
+  - aria-label en botón de show/hide [Critical]
+  - focus-visible:ring-2 en todos los interactivos [Critical]
+  - role="alert" en mensajes de error [High]
+  - Contraste texto >= 4.5:1 [High]
+
+Estado del botón submit:
+  - Spinner visible durante loading
+  - Error de credenciales: mensaje inline, no toast
+
+Mobile:
+  - Targets >= 44x44px [High]
+  - touch-action: manipulation en inputs
+
+Citas: ux-guidelines-formularios-accesibilidad.md,
+       react-shadcn-patterns.md, patron-estados-ui.md
+```
+
+**3 paginas consultadas. ~450 tokens de snippets + ~2 paginas completas.**
+Sin wikisearch: leer index.md + paginas relevantes = ~8,000 tokens.
+
 ---
 
 ## Herramientas opcionales
