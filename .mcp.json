@@ -1,9 +1,9 @@
 {
   "mcpServers": {
     "wikisearch": {
-      "command": "python",
-      "args": ["-m", "wikisearch.mcp_server"],
-      "cwd": "."
+      "command": "uv",
+      "args": ["run", "python", "-m", "wikisearch.mcp_server"],
+      "cwd": "/Users/apple/Devsar/wikijrs"
     }
   }
 }
