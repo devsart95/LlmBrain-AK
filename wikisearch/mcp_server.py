@@ -32,7 +32,7 @@ def wiki_search(
 
     Args:
         query: La pregunta o termino a buscar.
-        types: Filtrar por tipo. Valores: concept, entity, person, comparison, analysis, overview.
+        types: Filtrar por tipo. Valores: concept, entity, person, comparison, analysis, overview, brief.
         tags: Filtrar por tags (lista de strings).
         top_k: Numero de resultados (default 5, max 10).
     """

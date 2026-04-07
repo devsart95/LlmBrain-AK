@@ -31,20 +31,29 @@ LlmBrain-AK/
 │
 ├── sources/               # Fuentes crudas — inmutables, verdad de origen
 │   ├── articulo.md        # Papers, articulos, notas, transcripciones
-│   └── assets/            # Imagenes descargadas localmente
+│   ├── assets/            # Imagenes descargadas localmente
+│   └── raw/               # Respuestas crudas de APIs/web (enrichment)
 │
 ├── wiki/                  # Paginas generadas por el LLM — el agente es dueno de esta capa
-│   ├── _template.md       # Template con frontmatter para nuevas paginas
+│   ├── _template.md       # Template: Compiled Truth + Timeline
 │   └── concepto-a.md      # Una pagina por entidad, concepto o tema
+│
+├── web/                   # Next.js 15 web app — dashboard, browse, graph, ingest, query
+│
+├── wikisearch/            # Modulo Python BM25 + embeddings + MCP server
+│   └── mcp_server.py      # wiki_search, wiki_get, wiki_tags, wiki_index
 │
 ├── index.md               # Catalogo de contenido — se actualiza en cada ingest
 ├── log.md                 # Registro cronologico append-only de toda actividad
 ├── CLAUDE.md              # Schema operativo para Claude Code
 ├── AGENTS.md              # Schema operativo para otros agentes (Codex, OpenCode)
+├── CONTEXT.md             # Estado actual: completado y pendiente
 └── SETUP.md               # Guia de inicializacion para nuevos dominios
 ```
 
 **Regla fundamental:** el humano escribe en `sources/`. El LLM escribe en `wiki/`. Nunca al reves.
+
+**Estructura de cada pagina wiki:** Compiled Truth (sintesis actual, se actualiza) + Timeline (evidencia cronologica, append-only). La verdad compilada arriba, la trazabilidad abajo.
 
 ---
 
@@ -65,6 +74,17 @@ flowchart LR
     W -->|pagina| Q
     Q -->|respuesta| H
 
+    H -->|enriquecer pagina| EN[ENRICH]
+    EN --> WS
+    EN -->|web search, APIs| RAW[sources/raw]
+    EN -->|presenta hallazgos| H
+    EN --> W
+
+    H -->|pregunta estrategica| BR[BRIEF]
+    BR --> WS
+    BR --> W
+    BR -->|sintesis cross-domain| H
+
     H -->|health-check| L[LINT]
     L --> W
     L --> LOG
@@ -73,7 +93,7 @@ flowchart LR
 
 ---
 
-## Las tres operaciones
+## Las cinco operaciones
 
 ### `INGEST` — agregar una fuente nueva
 
@@ -116,6 +136,37 @@ Formatos de salida segun la consulta:
 
 ---
 
+### `ENRICH` — enriquecer una pagina existente
+
+```
+"enrich wiki/nextjs-best-practices.md"
+"enrich formularios"
+```
+
+1. Busca informacion actualizada via web search, APIs, o fuentes nuevas
+2. **Presenta hallazgos** — que datos nuevos hay, que contradice lo existente
+3. Actualiza la Compiled Truth y agrega entrada en Timeline
+4. Guarda datos crudos en `sources/raw/` para trazabilidad
+
+El enrich no es automatico — el usuario decide que se incorpora.
+
+---
+
+### `BRIEF` — sintesis ejecutiva cross-domain
+
+```
+"brief que stack UI elegir para un SaaS B2B?"
+"brief estado actual del conocimiento sobre performance"
+```
+
+1. Cruza multiples paginas wiki para generar analisis original
+2. Formato: resumen ejecutivo, hallazgos clave, conexiones no obvias, gaps, recomendaciones
+3. Se guarda como nueva pagina wiki con `type: brief`
+
+Un BRIEF no es un QUERY largo — genera insight nuevo cruzando el dominio.
+
+---
+
 ### `LINT` — health check de la wiki
 
 ```
@@ -123,15 +174,57 @@ Formatos de salida segun la consulta:
 ```
 
 **Deteccion:**
-- Paginas huerfanas (sin links entrantes)
+- Paginas huerfanas (sin links entrantes ni backlinks)
+- Links rotos — `[[pagina]]` que referencia paginas inexistentes
 - Afirmaciones contradictorias entre paginas
 - Claims desactualizados por fuentes mas recientes
-- Conceptos referenciados pero sin pagina propia
+- Paginas sin Timeline entries (sin trazabilidad)
+
+**Grafo de conexiones:**
+- Densidad del grafo — paginas con mas/menos conexiones
+- Clusters tematicos y puentes entre clusters
 
 **Proactivo:**
+- Sugiere paginas candidatas para ENRICH (pocas fuentes, desactualizadas)
 - Sugiere nuevas preguntas que la wiki aun no responde
 - Sugiere nuevas fuentes a buscar para cubrir los gaps
 - Genera reporte completo en `log.md`
+
+---
+
+## Web App
+
+La wiki tiene una interfaz web moderna con tema geek/dark construida en Next.js 15.
+
+```
+web/
+├── src/app/
+│   ├── page.tsx              # Dashboard: stats, recientes, breakdown por tipo
+│   ├── wiki/                 # Browse todas las paginas con tags coloreados
+│   ├── wiki/[slug]/          # Vista de pagina con backlinks y conexiones
+│   ├── graph/                # Grafo D3 force-directed interactivo
+│   ├── ingest/               # Ingest desde texto o URL con streaming
+│   ├── query/                # Chat con la wiki (streaming)
+│   └── log/                  # Historial de actividad
+└── .env.local                # WIKI_PATH, ANTHROPIC_API_KEY, LLM_MODEL
+```
+
+**Levantar localmente:**
+```bash
+cd web
+npm install
+npm run dev -- --port 3099
+# → http://localhost:3099
+```
+
+**Features:**
+- `Cmd+K` — command palette con busqueda rapida de paginas
+- D3 force graph con zoom, pan, drag y highlight de conexiones
+- Ingest streaming desde texto libre o URL
+- Query chat con contexto de la wiki via BM25
+- Tema: bg `#0a0a0f`, accent violet `#7c3aed`, data cyan `#22d3ee`, JetBrains Mono
+
+**Deploy (pendiente):** ver `CONTEXT.md` para la arquitectura Vercel + GitHub API.
 
 ---
 
@@ -163,6 +256,9 @@ claude .
 
 # 8. Mantenimiento periodico
 # "lint the wiki"
+
+# (Opcional) Web app
+cd web && npm install && npm run dev -- --port 3099
 ```
 
 Ver `SETUP.md` para la guia completa de inicializacion.
@@ -174,6 +270,8 @@ Ver `SETUP.md` para la guia completa de inicializacion.
 | Operacion | Modelo | Razon |
 |-----------|--------|-------|
 | Ingest | **Opus** | Razonamiento profundo, conexiones entre conceptos |
+| Enrich | **Opus** | Evaluar nueva informacion vs conocimiento existente |
+| Brief | **Opus** | Sintesis cross-domain, conexiones no obvias |
 | Lint | **Opus** | Deteccion de contradicciones, sugerencias proactivas |
 | Query | **Opus** | Sintesis multi-fuente |
 | Busqueda / lectura | **Sonnet** | Rapido y eficiente para recuperar contexto |

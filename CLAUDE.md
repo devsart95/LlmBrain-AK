@@ -11,7 +11,8 @@
 ```
 mi-wiki/
 ├── sources/           # Fuentes crudas — inmutables, verdad de origen
-│   └── assets/        # Imagenes descargadas localmente (Obsidian Web Clipper)
+│   ├── assets/        # Imagenes descargadas localmente (Obsidian Web Clipper)
+│   └── raw/           # Respuestas crudas de APIs/web (enrichment) — trazabilidad
 ├── wiki/              # Paginas generadas por el LLM — el agente es dueno de esta capa
 ├── schema/            # Decisiones de diseno internas (gitignoreado)
 ├── index.md           # Catalogo por categoria — siempre actualizado
@@ -24,9 +25,9 @@ mi-wiki/
 ## Modelo de operacion
 
 ### Modelo de IA
-- **Ingest / Query / Lint:** Opus (`/model opus`) — razonamiento profundo, conexiones entre conceptos
+- **Ingest / Query / Enrich / Brief / Lint:** Opus (`/model opus`) — razonamiento profundo, conexiones entre conceptos
 - **Busqueda y lectura:** Sonnet — rapido y eficiente para recuperar contexto
-- Cambiar a Opus antes de cualquier operacion de ingest o lint
+- Cambiar a Opus antes de cualquier operacion de ingest, enrich, brief o lint
 
 ### Roles
 - **Human:** curar fuentes, explorar, preguntar, decidir, co-evolucionar el schema
@@ -63,13 +64,7 @@ Trigger: pregunta directa sobre el dominio
 4. Sintetizar respuesta con citas
 5. **Archivar si es valiosa** → nueva pagina wiki + ejecutar `wiki_index()`
 
-**Sin modulo (fallback):**
-1. Leer `index.md` para identificar paginas relevantes
-2. Drill down sobre esas paginas
-3. Sintetizar respuesta con citas
-4. Archivar si es valiosa
-
-> **NUNCA leer wiki/ completo ni hacer Glob sobre wiki/. Siempre buscar primero.**
+> **NUNCA leer wiki/ completo ni hacer Glob sobre wiki/. Siempre buscar primero via wikisearch.**
 
 Formatos de salida posibles segun la pregunta:
 - Pagina markdown (default)
@@ -80,20 +75,66 @@ Formatos de salida posibles segun la pregunta:
 
 ---
 
+### ENRICH — enriquecer una pagina existente
+Trigger: `"enrich wiki/pagina.md"` o `"enrich [tema]"`
+
+1. Identificar la pagina wiki objetivo (buscar con `wiki_search` si se da un tema)
+2. Leer la pagina completa con `wiki_get()`
+3. Buscar informacion actualizada via web search, APIs, o fuentes nuevas en `sources/`
+4. **Presentar hallazgos al usuario** — que datos nuevos hay, que contradice lo existente, que confirma
+5. Actualizar la seccion Compiled Truth (arriba del `---`) con la nueva informacion
+6. Append en Timeline con fecha, fuente y resumen del cambio
+7. Guardar respuestas crudas de APIs/web en `sources/raw/` si aplica
+8. Actualizar `index.md` (fecha updated, sources count)
+9. Registrar en `log.md`
+10. Ejecutar `wiki_index()` para sincronizar
+
+> El enrich no es automatico — el usuario decide que se incorpora y que se descarta.
+
+---
+
+### BRIEF — sintesis ejecutiva cross-domain
+Trigger: `"brief [tema o pregunta estrategica]"`
+
+1. Analizar la pregunta e identificar paginas relevantes via `wiki_search()`
+2. Leer las paginas clave con `wiki_get()` (maximo 5-7 paginas)
+3. **Sintetizar un documento ejecutivo** que cruce conceptos de multiples paginas
+4. Formato del brief:
+   - Resumen ejecutivo (3-5 lineas)
+   - Hallazgos clave (bullets)
+   - Conexiones no obvias entre conceptos
+   - Gaps identificados (que falta saber)
+   - Recomendaciones actionables
+5. Guardar como nueva pagina wiki con `type: brief`
+6. Actualizar `index.md` y `log.md`
+7. Ejecutar `wiki_index()`
+
+> Un BRIEF no es un QUERY largo — es una pieza de analisis nueva que cruza el dominio y genera insight original.
+
+---
+
 ### LINT — health check
 Trigger: `"lint the wiki"`
 
 **Deteccion:**
-1. Paginas huerfanas (sin links entrantes)
-2. Afirmaciones contradictorias entre paginas
-3. Claims desactualizados por fuentes mas recientes
-4. Conceptos referenciados pero sin pagina propia, cross-references faltantes
-5. Data gaps resolubles con una busqueda web
+1. Paginas huerfanas (sin links entrantes ni backlinks)
+2. Links rotos — `[[pagina]]` que referencia paginas inexistentes
+3. Afirmaciones contradictorias entre paginas
+4. Claims desactualizados por fuentes mas recientes
+5. Conceptos referenciados pero sin pagina propia
+6. Cross-references faltantes (paginas que deberian linkear entre si pero no lo hacen)
+7. Paginas sin Timeline entries (solo Compiled Truth, sin trazabilidad)
+8. Data gaps resolubles con una busqueda web o un ENRICH
+
+**Grafo de conexiones:**
+9. Reportar densidad del grafo — paginas con mas/menos conexiones
+10. Identificar clusters tematicos y puentes entre clusters
 
 **Proactivo:**
-6. Sugerir nuevas preguntas que la wiki aun no responde
-7. Sugerir nuevas fuentes a buscar para cubrir los gaps
-8. Generar reporte completo en `log.md`
+11. Sugerir nuevas preguntas que la wiki aun no responde
+12. Sugerir paginas candidatas para ENRICH (desactualizadas o con pocas fuentes)
+13. Sugerir nuevas fuentes a buscar para cubrir los gaps
+14. Generar reporte completo en `log.md`
 
 ---
 
@@ -106,7 +147,7 @@ Cada pagina incluye frontmatter YAML obligatorio:
 ```yaml
 ---
 title: Nombre del concepto o entidad
-type: concept | entity | person | comparison | analysis | overview
+type: concept | entity | person | comparison | analysis | overview | brief
 tags: [tag1, tag2]
 sources: 0
 created: YYYY-MM-DD
@@ -125,7 +166,7 @@ Cuerpo de la pagina:
 [Por que importa, donde aparece]
 
 ## Detalle
-[Contenido principal]
+[Contenido principal — esta es la "Compiled Truth", la sintesis actual]
 
 ## Conexiones
 - Relacionado con: [[Concepto A]], [[Persona B]]
@@ -135,8 +176,12 @@ Cuerpo de la pagina:
 ## Fuentes
 - `sources/nombre-archivo.md` — descripcion breve
 
-## Log de cambios
-- YYYY-MM-DD: creacion inicial
+---
+
+## Timeline
+> Evidencia cronologica append-only. El contenido de arriba se actualiza; el timeline solo crece.
+
+- YYYY-MM-DD: creacion inicial desde `sources/fuente.md`
 ```
 
 El frontmatter permite usar Dataview en Obsidian para generar tablas dinamicas por `type`, `tags`, o `sources`.
@@ -178,10 +223,24 @@ Formato parseble con unix tools:
 - Paginas consultadas: wiki/x.md, wiki/y.md
 - Nueva pagina creada: wiki/nueva.md (o ninguna)
 
+## [YYYY-MM-DD] ENRICH | wiki/pagina.md
+- Fuentes consultadas: [web search, API, sources/nuevo.md]
+- Datos crudos guardados: sources/raw/pagina-enrich-YYYY-MM-DD.json
+- Secciones actualizadas: Detalle, Conexiones
+- Timeline entry agregado: si
+
+## [YYYY-MM-DD] BRIEF | tema o pregunta
+- Paginas consultadas: wiki/x.md, wiki/y.md, wiki/z.md
+- Brief generado: wiki/brief-tema.md
+- Gaps identificados: [lista]
+
 ## [YYYY-MM-DD] LINT | health-check
 - Huerfanas: wiki/x.md
+- Links rotos: [[pagina-inexistente]] en wiki/y.md
 - Contradicciones: wiki/a.md vs wiki/b.md
 - Gaps: [concepto sin pagina]
+- Paginas candidatas a enrich: wiki/x.md (0 fuentes, sin actualizar hace N dias)
+- Densidad del grafo: N links, promedio M conexiones/pagina
 - Nuevas fuentes sugeridas: [lista]
 ```
 
@@ -197,11 +256,25 @@ Este archivo es un documento vivo. A medida que se descubre que funciona para el
 
 ## Herramientas opcionales
 
-- **[qmd](https://github.com/tobi/qmd)**: busqueda semantica local BM25/vector, CLI + MCP server para integracion directa
 - **Obsidian**: graph view para visualizar conexiones, renderiza `[[wiki-links]]`
 - **Obsidian Web Clipper**: convierte articulos web a markdown. Usar "Download attachments" para bajar imagenes a `sources/assets/`
 - **Marp**: exportar paginas wiki a presentaciones markdown
 - **Dataview** (plugin Obsidian): queries dinamicas sobre frontmatter YAML de las paginas
+
+## Roadmap — vector search
+
+Cuando la wiki supere ~50-100 paginas, agregar busqueda semantica por embeddings:
+
+| Fase | Trigger | Accion |
+|------|---------|--------|
+| Actual | <50 paginas | BM25 via wikisearch es suficiente |
+| Fase 1 | 50-200 paginas | Agregar `text-embedding-3-small` + cosine similarity en Python |
+| Fase 2 | 200+ paginas | Evaluar `sqlite-vec` o FAISS lite para acceleration |
+
+La implementacion iria en `wikisearch/` como capa adicional al BM25 existente, no como reemplazo.
+El query combinaria keyword (BM25) + semantic (vector) con un reranker simple.
+
+---
 
 ## Modulo de busqueda — wikisearch
 
