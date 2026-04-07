@@ -6,6 +6,13 @@
 
 ---
 
+## [2026-04-07] INGEST | Claude Code Official Docs
+- Páginas creadas: claude-code-hooks, claude-code-skills, claude-code-subagentes, claude-code-memory, claude-code-settings, claude-code-agent-teams, claude-code-best-practices, claude-code-mcp, claude-code-permisos, claude-code-context-window, claude-code-workflow-patterns, claude-code-cli-referencia
+- Fuente: https://code.claude.com/docs
+- Cobertura: hooks (25+ eventos, 4 tipos, exit codes), skills (frontmatter completo, preprocessing shell, paths), subagentes (worktree isolation, Writer/Reviewer, auto-memory), memory y CLAUDE.md (dos sistemas, reglas modulares, límites), settings (4 scopes, merge behavior, managed), agent teams (experimental, shared task list, plan approval), best practices (constraint fundamental, failure patterns, fan-out), MCP (local/remoto, registry, OAuth, Elicitation), permisos (modos, allow/deny, clasificador ML, sandboxing), context window (compaction, rewind, degradación), workflow patterns (ciclo base, Plan Mode, non-interactive), CLI referencia (flags, REPL commands, keybindings)
+
+---
+
 ## [2026-04-07] LINT | fix crosslinks + gap pages
 - Crosslinks agregados: 34 paginas (todas las paginas existentes actualizadas con secciones Conexiones expandidas)
 - Paginas creadas: wiki/arquitectura-del-sistema.md, wiki/chatgpt-file-uploads.md, wiki/ingest.md

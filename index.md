@@ -8,8 +8,8 @@
 
 ## Estado
 
-- Paginas wiki: 37
-- Fuentes ingestadas: 4
+- Paginas wiki: 49
+- Fuentes ingestadas: 5
 
 ---
 
@@ -78,6 +78,21 @@
 - [Arquitectura del Sistema](wiki/arquitectura-del-sistema.md) — Tres capas (sources/wiki/indice), flujo INGEST, formato de paginas | fuentes: 0 | actualizado: 2026-04-07
 - [INGEST — Operacion de Ingest](wiki/ingest.md) — Proceso de incorporacion de fuentes: dialogo LLM-usuario, 8 pasos, diferencia con RAG | fuentes: 0 | actualizado: 2026-04-07
 - [ChatGPT File Uploads](wiki/chatgpt-file-uploads.md) — Alternativa RAG on-demand: ventajas, limitaciones, comparativa con LlmBrain | fuentes: 0 | actualizado: 2026-04-07
+
+## Claude Code — Docs Oficiales
+
+- [Claude Code — Hooks](wiki/claude-code-hooks.md) — 25+ eventos del lifecycle, tipos command/prompt/agent/http, exit codes, casos de uso con JSON real | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Skills](wiki/claude-code-skills.md) — SKILL.md: frontmatter, string substitutions, disable-model-invocation, context:fork, preprocessing shell | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Subagentes](wiki/claude-code-subagentes.md) — Context window aislado, specialización por rol, isolation:worktree, Writer/Reviewer pattern | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Memory y CLAUDE.md](wiki/claude-code-memory.md) — Dos sistemas: instrucciones manuales + auto-memory. Scopes, paths frontmatter, límites, qué incluir | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Settings y Configuración](wiki/claude-code-settings.md) — 4 scopes jerárquicos, merge de arrays, permission rules, managed settings para orgs | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Agent Teams](wiki/claude-code-agent-teams.md) — Experimental: teammates con comunicación bidireccional, shared task list, plan approval, casos de uso | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Best Practices](wiki/claude-code-best-practices.md) — La constraint fundamental, workflow Explore→Plan→Implement→Commit, failure patterns, fan-out | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — MCP](wiki/claude-code-mcp.md) — Model Context Protocol: servidores locales/remotos, registry, OAuth, Elicitation, hooks MCP | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Sistema de Permisos](wiki/claude-code-permisos.md) — Modos default/auto/bypass, allow/deny rules, clasificador ML, sandboxing, flujo de decisión | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Context Window y Compaction](wiki/claude-code-context-window.md) — Constraint fundamental, /compact, /rewind, /btw, checkpoints, degradación de performance | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Patrones de Workflow](wiki/claude-code-workflow-patterns.md) — Explore→Plan→Implement→Commit, non-interactive, fan-out, Writer/Reviewer, git worktrees | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — CLI Referencia](wiki/claude-code-cli-referencia.md) — Todos los flags CLI, comandos REPL, keybindings, patrones de uso frecuente | fuentes: 1 | actualizado: 2026-04-07
 
 ## Ejemplos y Referencias
 
