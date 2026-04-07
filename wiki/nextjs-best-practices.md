@@ -174,11 +174,18 @@ if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL required')
 | Bundle analyzer | `@next/bundle-analyzer` | Blind shipping |  Medium |
 
 ## Conexiones
-- Relacionado con: [[performance-react-ui]], [[react-shadcn-patterns]]
+- Relacionado con: [[performance-react-ui]], [[react-shadcn-patterns]], [[patron-estados-ui]]
 - Parte de: [[ux-guidelines-formularios-accesibilidad]] — error handling patterns
+- Ver también: [[tipografia-pairings]] (next/font para Inter y IBM Plex Sans), [[design-patterns-dark-mode]] (CSS variables en globals.css), [[ai-development-workflows]] (Next.js como plataforma target del SDD)
 
 ## Fuentes
 - `sources/uipro-skill/stack-nextjs.csv` — 39 reglas Next.js 15+ con ejemplos
 
-## Log de cambios
+---
+
+## Timeline
+
+> Evidencia cronologica append-only. Cada entrada registra cuando y de donde llego la informacion.
+> El contenido de arriba (Compiled Truth) se actualiza; el timeline solo crece.
+
 - 2026-04-04: creación inicial desde uipro-skill v2.5.0

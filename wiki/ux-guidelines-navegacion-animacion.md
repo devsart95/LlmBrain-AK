@@ -55,12 +55,19 @@ updated: 2026-04-04
 - Animaciones en `width/height` → usar `transform: scaleX()`
 
 ## Conexiones
-- Relacionado con: [[patron-estados-ui]], [[ux-guidelines-formularios-accesibilidad]], [[ux-guidelines-mobile-touch]]
+- Relacionado con: [[patron-estados-ui]], [[ux-guidelines-formularios-accesibilidad]], [[ux-guidelines-mobile-touch]], [[design-patterns-spacing]]
 - Parte de: [[estilos-ui-por-tipo-producto]]
+- Ver también: [[performance-react-ui]] (animaciones con transform, no width/height), [[react-shadcn-patterns]] (Tabs, Sheet, Dialog — componentes con navegacion), [[design-patterns-shadow-systems]] (z-index management)
 
 ## Fuentes
 - `sources/uipro-skill/ux-guidelines.csv` — reglas UX con Do/Don't y código (filas 1-21)
 - `sources/uipro-skill/web-interface.csv` — guidelines web específicas
 
-## Log de cambios
+---
+
+## Timeline
+
+> Evidencia cronologica append-only. Cada entrada registra cuando y de donde llego la informacion.
+> El contenido de arriba (Compiled Truth) se actualiza; el timeline solo crece.
+
 - 2026-04-04: creación inicial desde uipro-skill v2.5.0

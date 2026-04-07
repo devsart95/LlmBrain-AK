@@ -152,12 +152,20 @@ Cualquier acción irreversible (eliminar, resetear, cancelar) necesita confirmac
 ```
 
 ## Conexiones
-- Relacionado con: [[ux-guidelines-formularios-accesibilidad]], [[react-shadcn-patterns]]
+- Relacionado con: [[ux-guidelines-formularios-accesibilidad]], [[react-shadcn-patterns]], [[ux-guidelines-navegacion-animacion]]
+- Contrasta con: [[estilos-ui-por-tipo-producto]] (el estilo varia por dominio; los estados son universales)
 - Parte de: [[ux-guidelines-navegacion-animacion]]
+- Ver también: [[nextjs-best-practices]] (loading.tsx, error.tsx en App Router), [[uipro-design-skills]] (ui-styling skill incluye states), [[sistema-colores-por-dominio]] (paleta de estados)
 
 ## Fuentes
 - `sources/uipro-skill/ux-guidelines.csv` — filas 78-83 (Feedback), 32-35 (Interaction)
 - `sources/uipro-skill/SKILL.md` — sección completitud de componentes
 
-## Log de cambios
+---
+
+## Timeline
+
+> Evidencia cronologica append-only. Cada entrada registra cuando y de donde llego la informacion.
+> El contenido de arriba (Compiled Truth) se actualiza; el timeline solo crece.
+
 - 2026-04-04: creación inicial desde uipro-skill v2.5.0

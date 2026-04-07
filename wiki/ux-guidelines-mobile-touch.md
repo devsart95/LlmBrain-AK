@@ -70,11 +70,18 @@ location.replace('/nueva-ruta')
 - [ ] `overscroll-behavior: contain` donde pull-to-refresh no aplica
 
 ## Conexiones
-- Relacionado con: [[ux-guidelines-formularios-accesibilidad]], [[ux-guidelines-navegacion-animacion]]
+- Relacionado con: [[ux-guidelines-formularios-accesibilidad]], [[ux-guidelines-navegacion-animacion]], [[patron-estados-ui]]
 - Parte de: [[patron-estados-ui]]
+- Ver también: [[react-shadcn-patterns]] (Dialog, Sheet — componentes que necesitan touch-friendly sizing), [[nextjs-best-practices]] (viewport meta y responsive en Next.js), [[design-patterns-spacing]] (8px base unit aplica tambien en mobile)
 
 ## Fuentes
 - `sources/uipro-skill/ux-guidelines.csv` — filas 22-27 (Touch), 64-71 (Responsive)
 
-## Log de cambios
+---
+
+## Timeline
+
+> Evidencia cronologica append-only. Cada entrada registra cuando y de donde llego la informacion.
+> El contenido de arriba (Compiled Truth) se actualiza; el timeline solo crece.
+
 - 2026-04-04: creación inicial desde uipro-skill v2.5.0

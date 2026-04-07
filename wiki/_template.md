@@ -11,6 +11,8 @@ updated: YYYY-MM-DD
 
 > Una linea de definicion / resumen ejecutivo.
 
+---
+
 ## Contexto
 
 Por que importa este concepto y donde aparece dentro del dominio.
@@ -29,6 +31,11 @@ Contenido principal. Puede incluir subsecciones si el tema lo requiere.
 
 - `sources/nombre-archivo.md` — descripcion breve de la fuente
 
-## Log de cambios
+---
 
-- YYYY-MM-DD: creacion inicial
+## Timeline
+
+> Evidencia cronologica append-only. Cada entrada registra cuando y de donde llego la informacion.
+> El contenido de arriba (Compiled Truth) se actualiza; el timeline solo crece.
+
+- YYYY-MM-DD: creacion inicial desde `sources/fuente.md`

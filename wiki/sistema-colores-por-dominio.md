@@ -79,12 +79,19 @@ Independiente del dominio, los estados tienen colores fijos:
 - `text-gray-400 on gray-100` → contraste insuficiente (2.8:1, necesita ≥4.5:1)
 
 ## Conexiones
-- Relacionado con: [[tipografia-pairings]], [[estilos-ui-por-tipo-producto]]
+- Relacionado con: [[tipografia-pairings]], [[estilos-ui-por-tipo-producto]], [[design-tokens-comparativa]], [[design-md-format]]
 - Parte de: [[ux-guidelines-formularios-accesibilidad]] — color contrast rules
+- Ver también: [[design-patterns-dark-mode]] (near-black como regla universal), [[design-system-industrial]] (amber accent de gstack), [[patron-estados-ui]] (estados con paleta fija), [[uipro-design-skills]] (generate-tokens.cjs)
 
 ## Fuentes
 - `sources/uipro-skill/colors.csv` — 96 paletas por tipo de producto con hex exactos
 - `sources/uipro-skill/ux-guidelines.csv` — fila 36: Color Contrast (4.5:1 mínimo)
 
-## Log de cambios
+---
+
+## Timeline
+
+> Evidencia cronologica append-only. Cada entrada registra cuando y de donde llego la informacion.
+> El contenido de arriba (Compiled Truth) se actualiza; el timeline solo crece.
+
 - 2026-04-04: creación inicial desde uipro-skill v2.5.0

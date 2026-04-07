@@ -86,12 +86,19 @@ Según EvoSkills (paper 2026): los humanos organizamos UI para que otros humanos
 - Estado en URL siempre (facilita scraping/testing)
 
 ## Conexiones
-- Relacionado con: [[sistema-colores-por-dominio]], [[tipografia-pairings]]
+- Relacionado con: [[sistema-colores-por-dominio]], [[tipografia-pairings]], [[design-tokens-comparativa]], [[design-md-format]]
 - Contrasta con: [[patron-estados-ui]] — los estados son universales, el estilo no
+- Ver también: [[design-system-industrial]] (estilo industrial de gstack), [[design-patterns-dark-mode]] (cuando usar dark mode por tipo de producto), [[uipro-design-skills]] (ui-styling skill implementa estos estilos)
 
 ## Fuentes
 - `sources/uipro-skill/ui-reasoning.csv` — 95 patrones por tipo de producto
 - `sources/uipro-skill/styles.csv` — 67 estilos visuales con checklists
 
-## Log de cambios
+---
+
+## Timeline
+
+> Evidencia cronologica append-only. Cada entrada registra cuando y de donde llego la informacion.
+> El contenido de arriba (Compiled Truth) se actualiza; el timeline solo crece.
+
 - 2026-04-04: creación inicial desde uipro-skill v2.5.0

@@ -116,11 +116,19 @@ export default {
 ```
 
 ## Conexiones
-- Relacionado con: [[sistema-colores-por-dominio]], [[estilos-ui-por-tipo-producto]]
+- Relacionado con: [[sistema-colores-por-dominio]], [[estilos-ui-por-tipo-producto]], [[design-tokens-comparativa]], [[design-patterns-typography]]
+- Parte de: [[design-md-format]]
+- Ver también: [[design-system-industrial]] (Satoshi / DM Sans / JetBrains Mono en gstack), [[nextjs-best-practices]] (next/font para cargar fuentes), [[uipro-design-skills]] (design-system skill maneja tipografia)
 
 ## Fuentes
 - `sources/uipro-skill/typography.csv` — 56 pairings con CSS import y Tailwind config
 - `sources/uipro-skill/ux-guidelines.csv` — filas 72-77 (Typography rules)
 
-## Log de cambios
+---
+
+## Timeline
+
+> Evidencia cronologica append-only. Cada entrada registra cuando y de donde llego la informacion.
+> El contenido de arriba (Compiled Truth) se actualiza; el timeline solo crece.
+
 - 2026-04-04: creación inicial desde uipro-skill v2.5.0

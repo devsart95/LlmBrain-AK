@@ -179,11 +179,19 @@ const table = useReactTable({
 ```
 
 ## Conexiones
-- Relacionado con: [[nextjs-best-practices]], [[patron-estados-ui]], [[ux-guidelines-formularios-accesibilidad]]
+- Relacionado con: [[nextjs-best-practices]], [[patron-estados-ui]], [[ux-guidelines-formularios-accesibilidad]], [[performance-react-ui]]
+- Contrasta con: [[uipro-design-skills]] (uipro extiende shadcn con tokens y brand; shadcn es la capa base)
+- Ver también: [[design-tokens-comparativa]] (CSS variables = token architecture en shadcn), [[sistema-colores-por-dominio]] (theming con CSS vars), [[ux-guidelines-mobile-touch]] (touch targets en componentes)
 
 ## Fuentes
 - `sources/uipro-skill/stack-shadcn.csv` — 39 convenciones shadcn con ejemplos
 - `sources/uipro-skill/stack-react.csv` — patrones React generales
 
-## Log de cambios
+---
+
+## Timeline
+
+> Evidencia cronologica append-only. Cada entrada registra cuando y de donde llego la informacion.
+> El contenido de arriba (Compiled Truth) se actualiza; el timeline solo crece.
+
 - 2026-04-04: creación inicial desde uipro-skill v2.5.0

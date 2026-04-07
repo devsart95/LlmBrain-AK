@@ -77,12 +77,19 @@ updated: 2026-04-04
 - [ ] `prefers-reduced-motion` en animaciones
 
 ## Conexiones
-- Relacionado con: [[patron-estados-ui]], [[ux-guidelines-navegacion-animacion]], [[ux-guidelines-mobile-touch]]
+- Relacionado con: [[patron-estados-ui]], [[ux-guidelines-navegacion-animacion]], [[ux-guidelines-mobile-touch]], [[react-shadcn-patterns]]
 - Contrasta con: [[performance-react-ui]] — accesibilidad y performance no son opuestos
+- Ver también: [[sistema-colores-por-dominio]] (contraste 4.5:1 minimo), [[nextjs-best-practices]] (error.tsx + form handling), [[estilos-ui-por-tipo-producto]] (accesibilidad varia por tipo: healthcare vs fintech)
 
 ## Fuentes
 - `sources/uipro-skill/ux-guidelines.csv` — filas 36-44 (Accessibility), 54-63 (Forms)
 - `sources/uipro-skill/web-interface.csv` — secciones Accessibility, Focus, Forms, Anti-Pattern
 
-## Log de cambios
+---
+
+## Timeline
+
+> Evidencia cronologica append-only. Cada entrada registra cuando y de donde llego la informacion.
+> El contenido de arriba (Compiled Truth) se actualiza; el timeline solo crece.
+
 - 2026-04-04: creación inicial desde uipro-skill v2.5.0

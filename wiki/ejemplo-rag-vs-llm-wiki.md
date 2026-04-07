@@ -2,7 +2,7 @@
 title: RAG vs LLM Wiki
 type: comparison
 tags: [arquitectura, llm, conocimiento]
-sources: 1
+sources: 0
 created: 2026-04-04
 updated: 2026-04-04
 ---
@@ -56,14 +56,20 @@ Flujo separado en dos fases:
 
 ## Conexiones
 
-- Relacionado con: [[Ingest]], [[Query]], [[Index]]
-- Contrasta con: [[NotebookLM]], [[ChatGPT file uploads]]
-- Parte de: [[Arquitectura del sistema]]
+- Relacionado con: [[ingest]], [[context-engineering-patterns]], [[user-sovereignty]]
+- Contrasta con: [[chatgpt-file-uploads]], [[arquitectura-del-sistema]]
+- Parte de: [[arquitectura-del-sistema]]
+- Ver también: [[generation-verification-loop]] (el LLM wiki requiere verificacion humana en el ingest), [[agent-skills-ecosystem]] (skills como alternativa a RAG para dominios especificos)
 
 ## Fuentes
 
-- `sources/karpathy-llm-wiki.md` — gist original de Andrej Karpathy
+- Gist original de Andrej Karpathy (fuente externa, no ingestada como archivo)
 
-## Log de cambios
+---
+
+## Timeline
+
+> Evidencia cronologica append-only. Cada entrada registra cuando y de donde llego la informacion.
+> El contenido de arriba (Compiled Truth) se actualiza; el timeline solo crece.
 
 - 2026-04-04: creacion como pagina de ejemplo del sistema

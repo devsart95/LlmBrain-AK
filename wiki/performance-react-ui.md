@@ -235,11 +235,18 @@ users.toSorted((a, b) => a.name.localeCompare(b.name))
 - [ ] Bundle analyzer corrido antes de cada release
 
 ## Conexiones
-- Relacionado con: [[nextjs-best-practices]], [[react-shadcn-patterns]]
+- Relacionado con: [[nextjs-best-practices]], [[react-shadcn-patterns]], [[patron-estados-ui]]
 - Contrasta con: [[ux-guidelines-formularios-accesibilidad]] — performance no justifica saltarse accesibilidad
+- Ver también: [[ux-guidelines-navegacion-animacion]] (animaciones con transform para performance), [[persistent-browser-pattern]] (latencia 100-200ms target), [[ai-development-workflows]] (root-cause-tracing para diagnosticar cuellos de botella)
 
 ## Fuentes
 - `sources/uipro-skill/react-performance.csv` — 44 patrones con ejemplos (Critical a Low)
 
-## Log de cambios
+---
+
+## Timeline
+
+> Evidencia cronologica append-only. Cada entrada registra cuando y de donde llego la informacion.
+> El contenido de arriba (Compiled Truth) se actualiza; el timeline solo crece.
+
 - 2026-04-04: creación inicial desde uipro-skill v2.5.0
