@@ -8,8 +8,8 @@
 
 ## Estado
 
-- Paginas wiki: 61
-- Fuentes ingestadas: 8
+- Paginas wiki: 68
+- Fuentes ingestadas: 9
 
 ---
 
@@ -78,6 +78,17 @@
 - [Arquitectura del Sistema](wiki/arquitectura-del-sistema.md) — Tres capas (sources/wiki/indice), flujo INGEST, formato de paginas | fuentes: 0 | actualizado: 2026-04-07
 - [INGEST — Operacion de Ingest](wiki/ingest.md) — Proceso de incorporacion de fuentes: dialogo LLM-usuario, 8 pasos, diferencia con RAG | fuentes: 0 | actualizado: 2026-04-07
 - [ChatGPT File Uploads](wiki/chatgpt-file-uploads.md) — Alternativa RAG on-demand: ventajas, limitaciones, comparativa con LlmBrain | fuentes: 0 | actualizado: 2026-04-07
+
+## Awesome Claude Code — Ecosistema
+
+- [Awesome Claude Code — Catálogo](wiki/awesome-claude-code.md) — repo curado hesreallyhim: 7 categorías, ~150 recursos, criterio de calidad alto | fuentes: 1 | actualizado: 2026-04-07
+- [Ralph Wiggum Technique](wiki/ralph-wiggum-technique.md) — loop autónomo hasta done: spec observable, circuit breakers, ralph-orchestrator, ralph-playbook | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Tooling Ecosystem](wiki/claude-code-tooling-ecosystem.md) — claude-devtools, ccflare, claude-squad, claudekit, Dippy, crystal, session managers | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Orquestadores](wiki/claude-code-orquestadores.md) — claude-squad, claude-swarm, Auto-Claude, TSK, Ruflo, sudocode, taxonomía de cuándo usar cada uno | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Hooks Ecosystem](wiki/claude-code-hooks-ecosystem.md) — SDKs TS/Python/PHP/Go, TDD Guard, parry, Dippy, TypeScript Quality Hooks, patterns | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Slash Commands Catalog](wiki/claude-code-slash-commands-catalog.md) — /fix-pr, /common-ground, /tdd, /context-prime, /create-prp por categoría con ejemplos | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — CLAUDE.md Ejemplos Reales](wiki/claude-code-claude-md-ejemplos.md) — Metabase, HASH, LangGraphJS, SteadyStart, qué funciona y qué no | fuentes: 1 | actualizado: 2026-04-07
+- [Claude Code — Agent Skills Catalog](wiki/claude-code-agent-skills-catalog.md) — Trail of Bits, Scientific Skills, Everything CC, Fullstack, RIPER, AB Method, criterios de evaluación | fuentes: 1 | actualizado: 2026-04-07
 
 ## Claude Code — Docs Oficiales
 

@@ -6,6 +6,10 @@
 
 ---
 
+## [2026-04-07] INGEST | awesome-claude-code (hesreallyhim)
+- Páginas creadas: awesome-claude-code, ralph-wiggum-technique, claude-code-tooling-ecosystem, claude-code-orquestadores, claude-code-hooks-ecosystem, claude-code-slash-commands-catalog, claude-code-claude-md-ejemplos, claude-code-agent-skills-catalog
+- Total wiki: 68 páginas
+
 ## [2026-04-07] INGEST | Claude Agent SDK + MCP Docs + Vercel AI SDK
 - Páginas creadas: agent-sdk-overview, agent-sdk-hooks, agent-sdk-sessions, agent-sdk-subagentes, mcp-arquitectura, mcp-build-server, mcp-seguridad, vercel-ai-sdk-overview, vercel-ai-sdk-tools, vercel-ai-sdk-streaming, vercel-ai-sdk-agentes
 - Total wiki: 61 páginas
