@@ -8,8 +8,8 @@
 
 ## Estado
 
-- Paginas wiki: 49
-- Fuentes ingestadas: 5
+- Paginas wiki: 61
+- Fuentes ingestadas: 8
 
 ---
 
@@ -93,6 +93,26 @@
 - [Claude Code — Context Window y Compaction](wiki/claude-code-context-window.md) — Constraint fundamental, /compact, /rewind, /btw, checkpoints, degradación de performance | fuentes: 1 | actualizado: 2026-04-07
 - [Claude Code — Patrones de Workflow](wiki/claude-code-workflow-patterns.md) — Explore→Plan→Implement→Commit, non-interactive, fan-out, Writer/Reviewer, git worktrees | fuentes: 1 | actualizado: 2026-04-07
 - [Claude Code — CLI Referencia](wiki/claude-code-cli-referencia.md) — Todos los flags CLI, comandos REPL, keybindings, patrones de uso frecuente | fuentes: 1 | actualizado: 2026-04-07
+
+## Claude Agent SDK
+
+- [Agent SDK — Overview](wiki/agent-sdk-overview.md) — query(), tools built-in, hooks callbacks, subagentes, MCP, sesiones, Python/TS | fuentes: 1 | actualizado: 2026-04-07
+- [Agent SDK — Hooks](wiki/agent-sdk-hooks.md) — PreToolUse/PostToolUse/Stop, HookMatcher, permissionDecision, updatedInput, webhooks | fuentes: 1 | actualizado: 2026-04-07
+- [Agent SDK — Sesiones](wiki/agent-sdk-sessions.md) — continue vs resume vs fork, ClaudeSDKClient, cross-host sessions, session_id | fuentes: 1 | actualizado: 2026-04-07
+- [Agent SDK — Subagentes](wiki/agent-sdk-subagentes.md) — Map-Reduce, worktree isolation, AgentTeams experimental, patterns de especialización | fuentes: 1 | actualizado: 2026-04-07
+
+## MCP — Model Context Protocol
+
+- [MCP — Arquitectura](wiki/mcp-arquitectura.md) — Host/Client/Server, stdio vs HTTP, JSON-RPC 2.0, tools/resources/prompts, lifecycle | fuentes: 1 | actualizado: 2026-04-07
+- [MCP — Construir un Server](wiki/mcp-build-server.md) — TypeScript + Python, tool/resource/prompt registration, HTTP transport, Inspector | fuentes: 1 | actualizado: 2026-04-07
+- [MCP — Seguridad](wiki/mcp-seguridad.md) — Prompt injection, tool shadowing, confused deputy, trust levels, mitigaciones | fuentes: 1 | actualizado: 2026-04-07
+
+## Vercel AI SDK
+
+- [Vercel AI SDK — Overview](wiki/vercel-ai-sdk-overview.md) — generateText/streamText/generateObject, provider Anthropic, useChat, tool calling intro | fuentes: 1 | actualizado: 2026-04-07
+- [Vercel AI SDK — Tool Calling](wiki/vercel-ai-sdk-tools.md) — Zod schema, execute, maxSteps, stopWhen, needsApproval, multi-tool paralelo | fuentes: 1 | actualizado: 2026-04-07
+- [Vercel AI SDK — Streaming](wiki/vercel-ai-sdk-streaming.md) — TextStream, DataStream, useChat, streamObject, RSC streaming, onChunk, cancellation | fuentes: 1 | actualizado: 2026-04-07
+- [Vercel AI SDK — Agentes](wiki/vercel-ai-sdk-agentes.md) — ToolLoopAgent, onStepFinish, multi-agente, PersistentAgent, streaming agent UI | fuentes: 1 | actualizado: 2026-04-07
 
 ## Ejemplos y Referencias
 

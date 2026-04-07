@@ -6,6 +6,10 @@
 
 ---
 
+## [2026-04-07] INGEST | Claude Agent SDK + MCP Docs + Vercel AI SDK
+- Páginas creadas: agent-sdk-overview, agent-sdk-hooks, agent-sdk-sessions, agent-sdk-subagentes, mcp-arquitectura, mcp-build-server, mcp-seguridad, vercel-ai-sdk-overview, vercel-ai-sdk-tools, vercel-ai-sdk-streaming, vercel-ai-sdk-agentes
+- Total wiki: 61 páginas
+
 ## [2026-04-07] INGEST | Claude Code Official Docs
 - Páginas creadas: claude-code-hooks, claude-code-skills, claude-code-subagentes, claude-code-memory, claude-code-settings, claude-code-agent-teams, claude-code-best-practices, claude-code-mcp, claude-code-permisos, claude-code-context-window, claude-code-workflow-patterns, claude-code-cli-referencia
 - Fuente: https://code.claude.com/docs
