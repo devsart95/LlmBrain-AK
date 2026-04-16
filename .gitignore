@@ -50,3 +50,6 @@ dist/
 
 # Indice generado por wikisearch — no versionar
 .wiki_index/
+
+# agregado por gitignore-suggest 2026-04-16
+raw/
